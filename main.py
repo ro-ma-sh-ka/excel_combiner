@@ -7,6 +7,3 @@ app = QApplication([])
 window = MainWindow()
 window.show()
 exit(app.exec())
-
-
-

@@ -13,6 +13,8 @@ def combine(work_dir, files, pattern_sheet):
         excel_file = os.path.join(work_dir, file)
         workbook = pd.read_excel(excel_file, sheet_name=pattern_sheet, skiprows=[0, 2])
         combiner = pd.concat([combiner, workbook], sort=False, axis=0)
+        result_file = os.path.join(work_dir, '_combiner_result.xlsx')
+        write_to_excel(result_file, pattern_sheet, combiner)
     return combiner
 
 
