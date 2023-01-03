@@ -1,23 +1,30 @@
 import os
 import pandas as pd
 
-dir_name = './выгрузка озон_half2'
-files = os.listdir(dir_name)
-pattern_sheet = 'Шаблон для поставщика'
+
+def create_file_list(dir_name):
+    file_list = os.listdir(dir_name)
+    return file_list
 
 
-def read_excel(dir_name, file, pattern_sheet):
-    excel_file = os.path.join(dir_name, file)
-    workbook = pd.read_excel(excel_file, sheet_name=pattern_sheet, skiprows=[0, 2])
-    return workbook
+def combine(work_dir, files, pattern_sheet):
+    combiner = pd.DataFrame()
+    for file in files:
+        excel_file = os.path.join(work_dir, file)
+        workbook = pd.read_excel(excel_file, sheet_name=pattern_sheet, skiprows=[0, 2])
+        combiner = pd.concat([combiner, workbook], sort=False, axis=0)
+    return combiner
 
 
-combiner = pd.DataFrame()
-for file in files:
-    wb = read_excel(dir_name, file, pattern_sheet)
-    combiner = pd.concat([combiner, wb], sort=False, axis=0)
+def write_to_excel(result_file, pattern_sheet, combiner):
+    with pd.ExcelWriter(result_file) as writer:
+        combiner.to_excel(writer, sheet_name=pattern_sheet)
 
-writer = pd.ExcelWriter('test_half2.xlsx')
-combiner.to_excel(writer)
-writer.save()
-writer.close()
+
+# dir_name = './выгрузка озон_small'
+# files = os.listdir(dir_name)
+# pattern_sheet = 'Шаблон для поставщика'
+# result_file = os.path.join(dir_name, '_combiner_result.xlsx')
+#
+# combiner = combine(dir_name, files, pattern_sheet)
+# write_to_excel(result_file, pattern_sheet, combiner)
